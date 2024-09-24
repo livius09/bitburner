@@ -15,10 +15,10 @@ export async function main(ns) {
   // Loop through the array of servers without root access
   for (let i = 0; i < ar.length; i++) {
     let server = ar[i];
-    await ns.nuke(server);  // Gain root access
-    await ns.scp("farm.js", server);// Copy farm.js to the server
-    await ns.scp("spread.js,server);//copy farm.js to the server
-    await ns.exec("spread.js,server,1,server);//run spread 
+    ns.nuke(server);  // Gain root access
+    ns.scp("farm.js", server);// Copy farm.js to the server
+    ns.scp("spread.js",server);//copy farm.js to the server
+    ns.exec("spread.js",server,1,server);//run spread 
     ns.exec("farm.js", server, 1, server);  // Run farm.js with 1 thread, passing the server name as an argument
   }
 }
