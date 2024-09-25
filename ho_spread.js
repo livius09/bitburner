@@ -40,18 +40,17 @@ export async function main(ns) {
           break;
         case 1:
           await ns.brutessh(server);
-          await stfarm(ns, server);
           await ns.scp("farm.js", server);
+          await stfarm(ns, server);
           break;
         case 2:
           await ns.brutessh(server);
           await ns.ftpcrack(server);
-          await stfarm(ns, server);
           await ns.scp("farm.js", server);
+          await stfarm(ns, server);
         default:
           break;
       }
     }
   }
-
 }
