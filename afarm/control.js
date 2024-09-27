@@ -16,15 +16,15 @@ export async function main(ns) {
 
     if (seclev < minsec + 5) {
       ns.print("Runing Weaken");
-      ns.run("weaken.js");
-      await ns.sleep(thack + 100);
+      ns.run("weaken.js",1,targ);
+      await ns.sleep(tweak + 100);
     } else if (curmon < maxmon * 0.5) {
       ns.print("Runing Grow");
-      ns.run("grow.js");
+      ns.run("grow.js",1,targ);
       await ns.sleep(tgrow + 100)
     } else {
       ns.print("Runing Hack");
-      ns.run("hack.js");
+      ns.run("hack.js",1,targ);
       await ns.sleep(thack + 100);
     }
 
