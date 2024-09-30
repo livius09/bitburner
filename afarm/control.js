@@ -1,5 +1,3 @@
-control.js
-
 /** @param {NS} ns */
 export async function main(ns) {
   let targ = ns.args[0];
