@@ -27,8 +27,11 @@ export async function main(ns) {
   async function stfarm(ns, server) {
     await ns.nuke(server);
     ns.tprint("infected " + server);
-    await ns.scp("farm.js", server)
-    ns.exec("farm.js", server, 1, server);
+    await ns.scp("control.js", server);
+    await ns.scp("weaken.js",server);
+    await ns.scp("hack.js",server);
+    await ns.scp("grow.js",server);
+    ns.exec("control.js", server, 1, server);
   }
 
   for (let a = 0; a < ar.length; a++) {
