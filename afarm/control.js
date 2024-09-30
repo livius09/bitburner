@@ -23,7 +23,7 @@ export async function main(ns) {
     if (seclev > minsec + 0.5) {
       ns.run("weaken.js",mthweak,targ);
       await ns.sleep(tweak);
-    } else if (curmon < maxmon/3) {
+    } else if (curmon < maxmon*0.5) {
       ns.run("grow.js",mthgrow,targ);
       await ns.sleep(tgrow);
     } else {
