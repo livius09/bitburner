@@ -13,20 +13,23 @@ export async function main(ns) {
     let thack = ns.getHackTime(targ);
     let tgrow = ns.getGrowTime(targ);
     let tweak = ns.getWeakenTime(targ);
+    //get max threads
+    let  free= ns.getServerMaxRam(targ)-ns.getServerUsedRam(targ);
+    let mthhack=Math.floor(free/ns.getScriptRam("hack.js"));
+    let mthweak=Math.floor(free/ns.getScriptRam("weaken.js"));
+    let mthgrow=Math.floor(free/ns.getScriptRam("grow.js"));
+    
 
-    if (seclev < minsec + 5) {
-      ns.print("Runing Weaken");
-      ns.run("weaken.js",1,targ);
-      await ns.sleep(tweak + 100);
-    } else if (curmon < maxmon * 0.5) {
-      ns.print("Runing Grow");
-      ns.run("grow.js",1,targ);
-      await ns.sleep(tgrow + 100)
+    if (seclev > minsec + 0.5) {
+      ns.run("weaken.js",mthweak,targ);
+      await ns.sleep(tweak);
+    } else if (curmon < maxmon/3) {
+      ns.run("grow.js",mthgrow,targ);
+      await ns.sleep(tgrow);
     } else {
-      ns.print("Runing Hack");
-      ns.run("hack.js",1,targ);
-      await ns.sleep(thack + 100);
+      ns.run("hack.js",mthhack,targ);
+      await ns.sleep(thack);
     }
-
+    await ns.sleep(100);
   }
 }
