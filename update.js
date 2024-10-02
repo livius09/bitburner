@@ -34,8 +34,10 @@ export async function main(ns) {
     let server=ar[i];
     if (ns.hasRootAccess(server)==true){
       await ns.scp(script,server);
-      if(ru==1){
+      if(ru==1||ru==2){
+        if(ru==2){
         ns.killall(server);
+        }
         await ns.exec(script,server,1,server);
       }
     }
