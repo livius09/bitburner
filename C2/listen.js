@@ -1,7 +1,19 @@
+listen.js
+
 /** @param {NS} ns */
 export async function main(ns) {
   let ten = ns.getPortHandle(10);
   let rea = null;
+  let auth = false;
+  let psw= "levi";
+
+  while(true){
+    if(!ten.empty()){
+      if (ten.read()=="login"){
+
+      }
+    }  
+  }
   while (true) {
     if (!ten.empty()) {
       let rea = (ten.read())
