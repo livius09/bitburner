@@ -40,8 +40,14 @@ export async function main(ns) {
   while (true) {
     if (!ten.empty()) {
       let rea = ten.read();
+
       if (rea === 10) {
         ns.run("weaken.js", 1, ns.getHostname());
+      }
+      if (rea=="reboot"){
+        ns.run("listen.js");
+        ns.tprint("rebooted")
+        ns.kill(ns.pid);
       }
       ns.tprint(rea);
     }
