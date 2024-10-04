@@ -1,32 +1,33 @@
+/** @param {NS} ns */
 export async function main(ns) {
-  function eror(ns){
+  
+  function eror(ns) {
     ns.tprint("system eror");
     ns.kill(ns.pid);
   }
 
   let ten = ns.getPortHandle(10);
-  let authl = 10;
-  if (ns.fileExists("user.txt")){
+  if (ns.fileExists("user.txt")) {
     let userstxt = ns.read("user.txt")
-    var users=userstxt.split(",");
-  }else{
+    var users = userstxt.split(",");
+  } else {
     eror(ns);
   }
 
-  if (ns.fileExists("psw.txt")){
-  let pswtxt = ns.read("psw.txt");
-  var psw=pswtxt.split(",");
-  }else{
+  if (ns.fileExists("psw.txt")) {
+    let pswtxt = ns.read("psw.txt");
+    var psw = pswtxt.split(",");
+  } else {
     eror(ns);
   }
-  
-  if (ns.fileExists("auth.txt")){
-  let authtxt =read("auth.txt");
-  var authlev = authtxt.split(",");
-  }else{
+
+  if (ns.fileExists("auth.txt")) {
+    let authtxt = ns.read("auth.txt");
+    var authl = authtxt.split(",");
+  } else {
     eror(ns)
   }
-  
+
   let id = -1; // Declare id outside
 
   while (true) {
@@ -46,7 +47,7 @@ export async function main(ns) {
         // Password check
         let upas = await ns.prompt("Enter password: ", { type: "text" });
         if (upas === psw[id]) {
-          authl = authlev[id];
+          var authlev = authl[id];
           ns.tprint("Welcome " + users[id]);
           break;  // Break out of login loop
         } else {
@@ -67,12 +68,35 @@ export async function main(ns) {
       if (rea === 10) {
         ns.run("weaken.js", 1, ns.getHostname());
       }
-      if (rea=="reboot"){
+      if (rea == "reboot") {
         ns.run("listen.js");
         ns.tprint("rebooted");
         ns.kill(ns.pid);
       }
-      ns.tprint(rea);
+      if (rea == "add user") {
+        if (authlev < 1) {
+          while (true) {
+            let aduser = await ns.prompt("name of user to add", { type: "text" });
+            if (!users.includes(aduser)) {
+              ns.write("user.txt", ","+aduser, "a");
+              break;
+            } else {
+              ns.tprint("user already exists chose a other name");
+            }
+          }
+          let addpas = await ns.prompt("chose a pasword for user", { type: "text" });
+          ns.write("psw.txt", "," + addpas, "a");
+
+          let addauth = await ns.prompt("chose auth level for new user", { type: "text" });
+          ns.write("auth.txt", "," + addauth, "a");
+
+          ns.tprint("finished seting up user you can log in after reboot");
+
+        } else {
+          ns.tprint("you dont have the authlevel to add users. 0 or lower is requierd");
+        }
+      }
+      ns.tprint(rea)
     }
     await ns.sleep(1000);
   }
