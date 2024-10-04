@@ -1,9 +1,32 @@
 export async function main(ns) {
+  function eror(ns){
+    ns.tprint("system eror");
+    ns.kill(ns.pid);
+  }
+
   let ten = ns.getPortHandle(10);
   let authl = 10;
-  let users = ["levi", "mike"];
-  let psw = ["levi", "okslong"];
-  let authlev = [0, 1];
+  if (ns.fileExists("user.txt")){
+    let userstxt = ns.read("user.txt")
+    var users=userstxt.split(",");
+  }else{
+    eror(ns);
+  }
+
+  if (ns.fileExists("psw.txt")){
+  let pswtxt = ns.read("psw.txt");
+  var psw=pswtxt.split(",");
+  }else{
+    eror(ns);
+  }
+  
+  if (ns.fileExists("auth.txt")){
+  let authtxt =read("auth.txt");
+  var authlev = authtxt.split(",");
+  }else{
+    eror(ns)
+  }
+  
   let id = -1; // Declare id outside
 
   while (true) {
@@ -46,7 +69,7 @@ export async function main(ns) {
       }
       if (rea=="reboot"){
         ns.run("listen.js");
-        ns.tprint("rebooted")
+        ns.tprint("rebooted");
         ns.kill(ns.pid);
       }
       ns.tprint(rea);
