@@ -1,12 +1,22 @@
 /** @param {NS} ns */
 export async function main(ns) {
   
+  let ten = ns.getPortHandle(10);
+
   function eror(ns) {
     ns.tprint("system eror");
     ns.kill(ns.pid);
   }
+  async function awinput(ns){
+    while (true){
+      if (!ten.empty()){
+        return ten.read();
+        break;
+      }
+      await ns.sleep(100);
+    }
+  }
 
-  let ten = ns.getPortHandle(10);
   if (ns.fileExists("user.txt")) {
     let userstxt = ns.read("user.txt")
     var users = userstxt.split(",");
@@ -36,7 +46,8 @@ export async function main(ns) {
       if (message == "login") {
         // Username check
         while (true) {
-          let unamein = await ns.prompt("Enter user Name: ", { type: "text" });
+          ns.tprint("Please enter your user Name")
+          let unamein = await awinput(ns);
           if (users.includes(unamein)) {
             id = users.indexOf(unamein);
             break;
@@ -45,7 +56,8 @@ export async function main(ns) {
         }
 
         // Password check
-        let upas = await ns.prompt("Enter password: ", { type: "text" });
+        ns.tprint("Please enter your Pasword")
+        let upas = await awinput(ns);
         if (upas === psw[id]) {
           var authlev = authl[id];
           ns.tprint("Welcome " + users[id]);
