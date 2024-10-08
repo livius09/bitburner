@@ -1,3 +1,5 @@
+listen.js
+
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -7,6 +9,17 @@ export async function main(ns) {
     ns.tprint("system eror");
     ns.kill(ns.pid);
   }
+
+  function simpleHash(input) {
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+      let charCode = input.charCodeAt(i); // Get the Unicode value of each character
+      hash = (hash << 5) - hash + charCode; // Shift and add the character code
+      hash = hash & hash; // Convert to a 32-bit integer (like a hash overflow simulation)
+    }
+    return hash >>> 0; // Return an unsigned 32-bit integer
+  }
+
   async function awinput(ns) {
     while (true) {
       if (!ten.empty()) {
@@ -34,7 +47,10 @@ export async function main(ns) {
     let authtxt = ns.read("auth.txt");
     var authl = authtxt.split(",").map(Number);
   } else {
-    eror(ns)
+    eror(ns);
+  }
+  if (!(users.length == psw.length && psw.length == authl.length && users.length == authl.length)) {
+    eror(ns);
   }
 
   let id = -1; // Declare id outside
