@@ -1,5 +1,3 @@
-listen.js
-
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -73,7 +71,7 @@ export async function main(ns) {
         // Password check
         ns.tprint("Please enter your Pasword")
         let upas = await awinput(ns);
-        if (upas === psw[id]) {
+        if (simpleHash(upas) == psw[id]) {
           var authlev = authl[id];
           ns.tprint("Welcome " + users[id]);
           break;  // Break out of login loop
@@ -122,7 +120,7 @@ export async function main(ns) {
             ns.tprint("chose a pasword for the user: ");
             let addpas = await awinput(ns);
             if (!addpas.includes(",")) {
-              ns.write("psw.txt", "," + addpas, "a");
+              ns.write("psw.txt", "," + simpleHash(addpas), "a");
               break;
             } else {
               ns.tprint("You cant have a , in a password");
