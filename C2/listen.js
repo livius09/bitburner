@@ -1,3 +1,5 @@
+listen.js
+
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -24,6 +26,37 @@ export async function main(ns) {
         return ten.read();
       }
       await ns.sleep(100);
+    }
+  }
+  async function rmuser(ns) {
+    let rmus = awinput(ns);
+    if (authlev<1){
+      if (users.includes(rmus)) { 
+        if (curuser != rmus){
+          ns.tprint("are you shure you want to delet user "+ rmus+"yes/no");
+          if (await awinput(ns) === "yes"){
+            let index=indexof(rmus);
+            users.slice(index,1);
+            psw.slice(index,1);
+            authl.slice(index,1);
+          
+            ns.write("user.txt",users.toString(),"W");
+            ns.write("psw.txt",psw.toString(),"W");
+            ns.write("auth.txt",authl.toString(),"W");
+            
+            ns.toString("removed user "+rmus)
+
+          }else{
+            ns.tprint("ok dann halt nicht")
+          }
+        }else{
+          ns.tprint("you cant delet yourself");
+        }
+      }else{
+        ns.tprint("user doese not exist");
+      }
+    }else{
+      ns.tprint("you dont have the authlevel to do that")
     }
   }
 
@@ -73,6 +106,7 @@ export async function main(ns) {
         let upas = await awinput(ns);
         if (simpleHash(upas) == psw[id]) {
           var authlev = authl[id];
+          var curuser = users[id];
           ns.tprint("Welcome " + users[id]);
           break;  // Break out of login loop
         } else {
@@ -143,6 +177,7 @@ export async function main(ns) {
           ns.tprint("you dont have the authlevel to add users. 0 or lower is requierd");
         }
       }
+
       ns.tprint(rea)
     }
     await ns.sleep(1000);
