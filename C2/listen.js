@@ -1,7 +1,7 @@
-listen.js
-
 /** @param {NS} ns */
 export async function main(ns) {
+
+  ns.disableLog("sleep");
 
   let ten = ns.getPortHandle(10);
 
@@ -29,33 +29,36 @@ export async function main(ns) {
     }
   }
   async function rmuser(ns) {
-    let rmus = awinput(ns);
-    if (authlev<1){
-      if (users.includes(rmus)) { 
-        if (curuser != rmus){
-          ns.tprint("are you shure you want to delet user "+ rmus+"yes/no");
-          if (await awinput(ns) === "yes"){
-            let index=indexof(rmus);
-            users.slice(index,1);
-            psw.slice(index,1);
-            authl.slice(index,1);
-          
-            ns.write("user.txt",users.toString(),"W");
-            ns.write("psw.txt",psw.toString(),"W");
-            ns.write("auth.txt",authl.toString(),"W");
-            
-            ns.toString("removed user "+rmus)
+    ns.tprint("which user do you want to delet: ")
+    let rmus = await awinput(ns);
+    if (authlev < 1) {
+      if (users.includes(rmus)) {
+        if (curuser != rmus) {
+          ns.tprint("are you shure you want to delet user " + rmus + " yes/no");
+          if (await awinput(ns) === "yes") {
+            let index = users.indexOf(rmus);
+            users.splice(index, 1);
+            psw.splice(index, 1);
+            authl.splice(index, 1);
 
-          }else{
+            ns.write("user.txt", users.toString(), "w");
+            ns.print("removed from users")
+            ns.write("psw.txt", psw.toString(), "w");
+            ns.print("removed from psw" )
+            ns.write("auth.txt", authl.toString(), "w");
+
+            ns.tprint("removed user " + rmus)
+
+          } else {
             ns.tprint("ok dann halt nicht")
           }
-        }else{
+        } else {
           ns.tprint("you cant delet yourself");
         }
-      }else{
+      } else {
         ns.tprint("user doese not exist");
       }
-    }else{
+    } else {
       ns.tprint("you dont have the authlevel to do that")
     }
   }
@@ -63,6 +66,7 @@ export async function main(ns) {
   if (ns.fileExists("user.txt")) {
     let userstxt = ns.read("user.txt")
     var users = userstxt.split(",");
+    ns.print("users imported")
   } else {
     eror(ns);
   }
@@ -70,6 +74,7 @@ export async function main(ns) {
   if (ns.fileExists("psw.txt")) {
     let pswtxt = ns.read("psw.txt");
     var psw = pswtxt.split(",");
+    ns.print("paswords imported");
   } else {
     eror(ns);
   }
@@ -77,11 +82,14 @@ export async function main(ns) {
   if (ns.fileExists("auth.txt")) {
     let authtxt = ns.read("auth.txt");
     var authl = authtxt.split(",").map(Number);
+    ns.print("autl inported");
   } else {
     eror(ns);
   }
   if (!(users.length == psw.length && psw.length == authl.length && users.length == authl.length)) {
     eror(ns);
+  }else{
+    ns.print("all files are the same length")
   }
 
   let id = -1; // Declare id outside
@@ -96,9 +104,11 @@ export async function main(ns) {
           let unamein = await awinput(ns);
           if (users.includes(unamein)) {
             id = users.indexOf(unamein);
+            ns.print("enterd user name: " + unamein)
             break;
           }
           ns.tprint("User does not exist!");
+          ns.print("failed to usernam whit: " + unamein)
         }
 
         // Password check
@@ -107,13 +117,16 @@ export async function main(ns) {
         if (simpleHash(upas) == psw[id]) {
           var authlev = authl[id];
           var curuser = users[id];
-          ns.tprint("Welcome " + users[id]);
+          ns.tprint("Welcome " + curuser);
+          ns.print(curuser+" loged in");
           break;  // Break out of login loop
         } else {
           ns.tprint("Wrong password, please try again.");
+          ns.print("tried wrong pasword for "+users[id]);
         }
       } else {
         ns.tprint("You have to login first.");
+        ns.print("enterd" + message + "whitout being loged in")
       }
     }
     await ns.sleep(500);
@@ -136,7 +149,7 @@ export async function main(ns) {
         if (authlev < 1) {
           while (true) {
             ns.tprint("Please enter the name of the user to add: ");
-            let aduser = await awinput(ns);
+            var aduser = await awinput(ns);
             if (!users.includes(aduser)) {
               if (!aduser.includes(",")) {
                 ns.write("user.txt", "," + aduser, "a");
@@ -170,15 +183,19 @@ export async function main(ns) {
               ns.tprint("auth level has to be a number");
             }
           }
-
+          ns.print("set up an new user: "+aduser)
           ns.tprint("finished seting up user you can log in after reboot");
 
         } else {
           ns.tprint("you dont have the authlevel to add users. 0 or lower is requierd");
         }
       }
+      if (rea == "remove user") {
+        await rmuser(ns);
+      }
 
-      ns.tprint(rea)
+      ns.tprint(rea);
+      ns.print(rea);
     }
     await ns.sleep(1000);
   }
