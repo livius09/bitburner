@@ -62,7 +62,52 @@ export async function main(ns) {
       ns.tprint("you dont have the authlevel to do that")
     }
   }
+  async function adduser(ns){
+    if (authlev < 1) {
+        while (true) {
+            ns.tprint("Please enter the name of the user to add: ");
+            var aduser = await awinput(ns);
+            if (!users.includes(aduser)) {
+              if (!aduser.includes(",")) {
+                ns.write("user.txt", "," + aduser, "a");
+                break;
+              } else {
+                ns.tprint("you cant have a , in user name");
+                continue;
+              }
 
+            } else {
+               ns.tprint("user already exists chose a other name");
+            }
+          }
+          while (true) {
+            ns.tprint("chose a pasword for the user: ");
+            let addpas = await awinput(ns);
+            if (!addpas.includes(",")) {
+              ns.write("psw.txt", "," + simpleHash(addpas), "a");
+              break;
+            } else {
+              ns.tprint("You cant have a , in a password");
+            }
+          }
+          while (true) {
+            ns.tprint("Chose an autlevel for the user(must be a number)");
+            var addauth = Number(await awinput(ns));
+            if (!isNaN(addauth)) {
+              ns.write("auth.txt", "," + addauth, "a");
+              break;
+            } else {
+              ns.tprint("auth level has to be a number");
+            }
+          }
+          ns.print("set up an new user: "+aduser)
+          ns.tprint("finished seting up user you can log in after reboot");
+
+        } else {
+          ns.tprint("you dont have the authlevel to add users. 0 or lower is requierd");
+        }
+    
+  }
   if (ns.fileExists("user.txt")) {
     let userstxt = ns.read("user.txt")
     var users = userstxt.split(",");
@@ -146,49 +191,8 @@ export async function main(ns) {
         ns.kill(ns.pid);
       }
       if (rea == "add user") {
-        if (authlev < 1) {
-          while (true) {
-            ns.tprint("Please enter the name of the user to add: ");
-            var aduser = await awinput(ns);
-            if (!users.includes(aduser)) {
-              if (!aduser.includes(",")) {
-                ns.write("user.txt", "," + aduser, "a");
-                break;
-              } else {
-                ns.tprint("you cant have a , in user name");
-                continue;
-              }
-
-            } else {
-              ns.tprint("user already exists chose a other name");
-            }
-          }
-          while (true) {
-            ns.tprint("chose a pasword for the user: ");
-            let addpas = await awinput(ns);
-            if (!addpas.includes(",")) {
-              ns.write("psw.txt", "," + simpleHash(addpas), "a");
-              break;
-            } else {
-              ns.tprint("You cant have a , in a password");
-            }
-          }
-          while (true) {
-            ns.tprint("Chose an autlevel for the user(must be a number)");
-            var addauth = Number(await awinput(ns));
-            if (!isNaN(addauth)) {
-              ns.write("auth.txt", "," + addauth, "a");
-              break;
-            } else {
-              ns.tprint("auth level has to be a number");
-            }
-          }
-          ns.print("set up an new user: "+aduser)
-          ns.tprint("finished seting up user you can log in after reboot");
-
-        } else {
-          ns.tprint("you dont have the authlevel to add users. 0 or lower is requierd");
-        }
+        await adduser(ns);
+        
       }
       if (rea == "remove user") {
         await rmuser(ns);
