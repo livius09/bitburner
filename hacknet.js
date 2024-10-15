@@ -1,3 +1,4 @@
+/** @param {NS} ns */
 export async function main(ns) {
   var maxno = 25;//max nodes
   var maxle = 150;//max level of each node
