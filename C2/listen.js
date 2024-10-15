@@ -3,11 +3,21 @@ export async function main(ns) {
 
   ns.disableLog("sleep");
 
+  let host = ns.getHostname();
   let ten = ns.getPortHandle(10);
 
   function eror(ns) {
     ns.tprint("system eror");
     ns.kill(ns.pid);
+  }
+  function help(ns){
+    ns.print("help");
+    ns.tprint("----HELP----")
+    ns.tprint("login: after entering it prompts username and pasword");
+    ns.tprint("reboot: starts a new instance and then kills itself");
+    ns.tprint("add user: add a user and chose his user name pasword and authlevel");
+    ns.tprint("remove user: removes a user name by its name");
+    ns.tprint("run: runs the script you specified")
   }
 
   function simpleHash(input) {
@@ -18,6 +28,22 @@ export async function main(ns) {
       hash = hash & hash; // Convert to a 32-bit integer (like a hash overflow simulation)
     }
     return hash >>> 0; // Return an unsigned 32-bit integer
+  }
+  function getfree(ns){
+    return ns.getServerMaxRam(host)-ns.getServerUsedRam(host);
+  }
+  async function runer(ns){
+    ns.tprint("which program do you want to run: ");
+    let prog= await awinput(ns);
+    if (ns.fileExists(prog)){
+      if (getfree(ns)>ns.getScriptRam(prog)){
+        ns.run(prog);
+      }else{
+        ns.tprint("you dont have enough memory to run that script");
+      }
+    }else{
+      ns.tprint("file doese not exist on this server")
+    }
   }
 
   async function awinput(ns) {
@@ -142,6 +168,9 @@ export async function main(ns) {
   while (true) {
     if (!ten.empty()) {
       let message = ten.read();
+      if (message== "help"||message=="Help"){
+        help(ns);
+      }else{
       if (message == "login") {
         // Username check
         while (true) {
@@ -173,6 +202,7 @@ export async function main(ns) {
         ns.tprint("You have to login first.");
         ns.print("enterd" + message + "whitout being loged in")
       }
+      }
     }
     await ns.sleep(500);
   }
@@ -183,7 +213,7 @@ export async function main(ns) {
       let rea = ten.read();
 
       if (rea === 10) {
-        ns.run("weaken.js", 1, ns.getHostname());
+        ns.run("weaken.js", 1, host);
       }
       if (rea == "reboot") {
         ns.run("listen.js");
@@ -196,6 +226,12 @@ export async function main(ns) {
       }
       if (rea == "remove user") {
         await rmuser(ns);
+      }
+      if (rea=="help"||rea=="Help"){
+        help(ns);
+      }
+      if (rea=="run"){
+        await runer(ns);
       }
 
       ns.tprint(rea);
